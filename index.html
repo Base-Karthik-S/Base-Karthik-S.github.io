@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karthik S — Security Analyst</title>
+<meta name="description" content="Portfolio of Karthik S — MSc Cyber Security, Newcastle University. Threat detection, incident triage, security monitoring.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B1120;
+  --surface:#111A2E;
+  --surface-2:#16213A;
+  --border:#1E2A44;
+  --text:#E2E8F0;
+  --muted:#8CA0BD;
+  --accent:#38BDF8;
+  --accent-dim:rgba(56,189,248,.12);
+  --ok:#34D399;
+  --warn:#F59E0B;
+  --font-display:'Space Grotesk',sans-serif;
+  --font-body:'Inter',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.6;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;background:
+  radial-gradient(ellipse 80% 50% at 50% -10%,rgba(56,189,248,.08),transparent),
+  repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(56,189,248,.025) 40px),
+  repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(56,189,248,.025) 40px);
+  pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 24px}
+a{color:var(--accent);text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+/* ---------- header / hero ---------- */
+header{padding:28px 0 8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.logo{font-family:var(--font-mono);font-size:.85rem;color:var(--muted);letter-spacing:.08em}
+.logo b{color:var(--accent);font-weight:600}
+.status-chips{display:flex;gap:10px;flex-wrap:wrap}
+.chip{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.06em;padding:5px 11px;border:1px solid var(--border);border-radius:999px;color:var(--muted);background:var(--surface);display:flex;align-items:center;gap:7px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.dot.pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+.hero{padding:64px 0 56px}
+.eyebrow{font-family:var(--font-mono);font-size:.75rem;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;margin-bottom:14px}
+h1{font-family:var(--font-display);font-size:clamp(2.2rem,5.5vw,3.6rem);font-weight:700;line-height:1.08;letter-spacing:-.01em}
+h1 .sub{display:block;color:var(--muted);font-weight:500;font-size:clamp(1.1rem,2.6vw,1.6rem);margin-top:10px}
+.hero p.lede{max-width:640px;color:var(--muted);margin-top:20px;font-size:1.02rem}
+
+/* triage log — signature */
+.triage{margin-top:34px;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;max-width:720px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.triage-bar{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface-2)}
+.triage-bar span{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);letter-spacing:.08em}
+.tl{padding:18px 20px;font-family:var(--font-mono);font-size:.8rem;min-height:132px}
+.tl-line{display:flex;gap:10px;margin-bottom:8px;opacity:0;transform:translateY(4px);transition:opacity .4s,transform .4s}
+.tl-line.show{opacity:1;transform:none}
+.tl-time{color:#4A5B78;flex-shrink:0}
+.tl-tag{flex-shrink:0;font-weight:600}
+.tl-tag.info{color:var(--accent)}.tl-tag.ok{color:var(--ok)}.tl-tag.warn{color:var(--warn)}
+.tl-msg{color:var(--text)}
+.cursor{display:inline-block;width:8px;height:15px;background:var(--accent);vertical-align:-2px;animation:pulse 1s steps(1) infinite}
+
+/* ---------- anchor nav (scrollspy) ---------- */
+nav.anchors{position:sticky;top:0;z-index:20;background:rgba(11,17,32,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.anchors-inner{display:flex;gap:4px;overflow-x:auto;padding:8px 24px;max-width:1060px;margin:0 auto;scrollbar-width:none}
+.anchors-inner::-webkit-scrollbar{display:none}
+.anchor-link{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.05em;border:1px solid transparent;color:var(--muted);padding:9px 16px;border-radius:8px;white-space:nowrap;transition:color .2s,background .2s}
+.anchor-link:hover{color:var(--text);background:var(--surface)}
+.anchor-link.current{color:var(--accent);background:var(--accent-dim);border-color:rgba(56,189,248,.3)}
+
+/* ---------- sections ---------- */
+section.block{padding:76px 0 24px}
+h2{font-family:var(--font-display);font-size:1.7rem;font-weight:600;margin-bottom:6px}
+.h2-kicker{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
+.section-intro{color:var(--muted);max-width:620px;margin-bottom:34px}
+.section-rule{height:1px;background:linear-gradient(90deg,var(--border),transparent);margin-top:56px}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.reveal.in{opacity:1;transform:none}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:26px;transition:border-color .25s,transform .25s}
+.card:hover{border-color:rgba(56,189,248,.35)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+
+/* overview */
+.ov-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:36px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.stat .n{font-family:var(--font-display);font-size:1.9rem;font-weight:700;color:var(--accent)}
+.stat .l{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-top:4px}
+
+/* education */
+.edu{display:flex;flex-direction:column;gap:18px}
+.edu .card{display:grid;grid-template-columns:auto 1fr;gap:20px}
+.edu-year{font-family:var(--font-mono);font-size:.75rem;color:var(--accent);letter-spacing:.08em;padding-top:4px;min-width:96px}
+.edu h3{font-family:var(--font-display);font-size:1.15rem;font-weight:600}
+.edu .inst{color:var(--muted);font-size:.92rem;margin:2px 0 10px}
+.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{font-family:var(--font-mono);font-size:.68rem;padding:4px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);color:var(--muted)}
+.badge{font-family:var(--font-mono);font-size:.66rem;letter-spacing:.08em;padding:4px 10px;border-radius:6px;background:rgba(52,211,153,.12);color:var(--ok);border:1px solid rgba(52,211,153,.3)}
+
+/* certifications */
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.cert .icon{font-family:var(--font-mono);font-size:.7rem;color:var(--accent);letter-spacing:.1em;margin-bottom:12px}
+.cert h3{font-family:var(--font-display);font-size:1.05rem;font-weight:600;margin-bottom:6px}
+.cert p{color:var(--muted);font-size:.88rem}
+.cert a.verify{display:inline-block;margin-top:12px;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.05em}
+.cert a.verify:hover{text-decoration:underline}
+
+/* projects — flip/expand */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:18px}
+.proj{perspective:1400px;min-height:360px;cursor:pointer}
+.proj-inner{position:relative;width:100%;height:100%;min-height:360px;transition:transform .65s cubic-bezier(.4,.1,.2,1);transform-style:preserve-3d}
+.proj.flipped .proj-inner{transform:rotateY(180deg)}
+.proj-face{position:absolute;inset:0;backface-visibility:hidden;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;flex-direction:column}
+.proj-face.back{transform:rotateY(180deg);background:var(--surface-2);overflow-y:auto}
+.proj:hover .proj-face{border-color:rgba(56,189,248,.4)}
+.proj .tagline{font-family:var(--font-mono);font-size:.66rem;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin-bottom:12px}
+.proj h3{font-family:var(--font-display);font-size:1.12rem;font-weight:600;line-height:1.3;margin-bottom:10px}
+.proj .desc{color:var(--muted);font-size:.9rem;flex-grow:1}
+.proj .flip-hint{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);margin-top:16px;display:flex;align-items:center;gap:6px}
+.proj .flip-hint::after{content:"⟳";color:var(--accent)}
+.proj-face.back h4{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin:12px 0 8px}
+.proj-face.back h4:first-child{margin-top:0}
+.proj-face.back ul{list-style:none}
+.proj-face.back li{color:var(--muted);font-size:.85rem;padding-left:16px;position:relative;margin-bottom:8px}
+.proj-face.back li::before{content:"▸";position:absolute;left:0;color:var(--accent)}
+.repo-link{font-family:var(--font-mono);font-size:.72rem;margin-top:auto;padding-top:12px}
+.repo-link:hover{text-decoration:underline}
+.repo-note{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);margin-top:auto;padding-top:12px}
+
+/* skills */
+.skill-group{margin-bottom:38px}
+.skill-group h3{font-family:var(--font-mono);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.skill-group h3::after{content:"";flex-grow:1;height:1px;background:var(--border)}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px 28px}
+.skill{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.skill-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:10px}
+.skill-name{font-size:.92rem;font-weight:500}
+.skill-meta{font-family:var(--font-mono);font-size:.64rem;color:var(--muted);white-space:nowrap}
+.bar{height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--accent),#7DD3FC);transition:width 1s cubic-bezier(.3,.7,.3,1)}
+.skill.animated .bar i{width:var(--lvl)}
+.legend{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);margin-bottom:26px}
+.legend b{color:var(--warn);font-weight:500}
+
+/* contact */
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:8px}
+.contact-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:8px;transition:border-color .25s,transform .25s}
+.contact-card:hover{border-color:rgba(56,189,248,.45);transform:translateY(-3px)}
+.contact-card .k{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.contact-card .v{font-family:var(--font-display);font-size:1.05rem;font-weight:600;color:var(--text)}
+.contact-card .u{font-family:var(--font-mono);font-size:.75rem;color:var(--accent);word-break:break-all}
+.cta{margin-top:34px;background:linear-gradient(135deg,var(--surface),var(--surface-2));border:1px solid var(--border);border-radius:14px;padding:34px;text-align:center}
+.cta h3{font-family:var(--font-display);font-size:1.4rem;font-weight:600;margin-bottom:8px}
+.cta p{color:var(--muted);max-width:520px;margin:0 auto 22px}
+.btn{display:inline-block;font-family:var(--font-mono);font-size:.82rem;letter-spacing:.05em;background:var(--accent);color:#06121F;font-weight:600;padding:13px 28px;border-radius:9px;transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(56,189,248,.3)}
+
+footer{border-top:1px solid var(--border);padding:26px 0 40px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-family:var(--font-mono);font-size:.7rem;color:var(--muted);margin-top:60px}
+
+@media(max-width:640px){
+  .edu .card{grid-template-columns:1fr}
+  .edu-year{min-width:0}
+  .hero{padding:44px 0 36px}
+  section.block{padding:56px 0 16px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+  .skill .bar i{width:var(--lvl)}
+  .proj-inner{transition:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo"><b>KS</b> // security-analyst</div>
+  <div class="status-chips">
+    <span class="chip"><span class="dot pulse"></span>OPEN TO SOC ROLES</span>
+    <span class="chip">NEWCASTLE UPON TYNE, UK</span>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="eyebrow">Threat Detection · Incident Triage · Security Monitoring</div>
+  <h1>Karthik S
+    <span class="sub">Security Analyst · MSc Cyber Security, Newcastle University</span>
+  </h1>
+  <p class="lede">I build detection systems and investigate anomalies — from an ML-based network IDS classifying 13M+ flows against MITRE ATT&amp;CK, to host-based endpoint anomaly detection, to 100+ hands-on SOC labs on TryHackMe.</p>
+
+  <div class="triage" aria-label="Simulated analyst triage log">
+    <div class="triage-bar"><span class="dot" style="background:var(--warn);box-shadow:none"></span><span class="dot" style="box-shadow:none"></span><span>analyst@ks:~/triage — live feed</span></div>
+    <div class="tl" id="triageLog"></div>
+  </div>
+</section>
+</div>
+
+<nav class="anchors" aria-label="Page sections">
+  <div class="anchors-inner">
+    <a class="anchor-link" href="#overview">overview</a>
+    <a class="anchor-link" href="#education">education</a>
+    <a class="anchor-link" href="#certifications">certs</a>
+    <a class="anchor-link" href="#projects">projects</a>
+    <a class="anchor-link" href="#skills">skills</a>
+    <a class="anchor-link" href="#contact">contact</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- OVERVIEW -->
+<section class="block" id="overview">
+  <div class="h2-kicker">// overview</div>
+  <h2>Profile</h2>
+  <p class="section-intro">MSc Cyber Security candidate (predicted Distinction) with hands-on experience in endpoint and network threat detection, incident triage, and security monitoring — backed by a disciplined analytical background in anomaly detection, root-cause investigation, and structured escalation.</p>
+
+  <div class="ov-stats">
+    <div class="stat reveal"><div class="n">13M+</div><div class="l">Network flows classified</div></div>
+    <div class="stat reveal"><div class="n">≥0.98</div><div class="l">F1 detection score</div></div>
+    <div class="stat reveal"><div class="n">100+</div><div class="l">TryHackMe SOC labs</div></div>
+    <div class="stat reveal"><div class="n">7th</div><div class="l">AI Odyssey CTF (team lead)</div></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card reveal">
+      <div class="h2-kicker">// current focus</div>
+      <p style="color:var(--muted);font-size:.93rem">MSc dissertation on adversarial robustness of ML-based network intrusion detection — modelling realistic attacker capability with a MITRE ATT&amp;CK-grounded threat taxonomy and measuring detection-evasion behaviour.</p>
+    </div>
+    <div class="card reveal">
+      <div class="h2-kicker">// professional background</div>
+      <p style="color:var(--muted);font-size:.93rem">Graduate Engineer Trainee (Operations) at Jindal Steel &amp; Power — led root-cause investigations (SIPOC, Pareto, Why-Why) projected to save ~£135K/yr, and designed metric-reporting and escalation frameworks across 3 cross-functional teams.</p>
+    </div>
+  </div>
+  <div class="section-rule"></div>
+</section>
+
+<!-- EDUCATION -->
+<section class="block" id="education">
+  <div class="h2-kicker">// education</div>
+  <h2>Academic Record</h2>
+  <p class="section-intro">Engineering foundations at IIT, security specialisation at Newcastle.</p>
+  <div class="edu">
+    <div class="card reveal">
+      <div class="edu-year">2025 — 2026</div>
+      <div>
+        <h3>MSc Cyber Security</h3>
+        <div class="inst">Newcastle University, UK</div>
+        <span class="badge">PREDICTED: DISTINCTION</span>
+        <div class="pill-row">
+          <span class="pill">Network Security &amp; Ethical Hacking</span>
+          <span class="pill">System Security</span>
+          <span class="pill">Secure Software Development</span>
+          <span class="pill">Information Security &amp; Cryptography</span>
+          <span class="pill">Risk &amp; Trust Management</span>
+        </div>
+      </div>
+    </div>
+    <div class="card reveal">
+      <div class="edu-year">2020 — 2024</div>
+      <div>
+        <h3>B.Tech, Metallurgical &amp; Materials Engineering</h3>
+        <div class="inst">Indian Institute of Technology (IIT) Bhubaneswar, India</div>
+        <span class="badge" style="background:var(--accent-dim);color:var(--accent);border-color:rgba(56,189,248,.3)">CGPA 8.01 / 10</span>
+      </div>
+    </div>
+  </div>
+  <div class="section-rule"></div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section class="block" id="certifications">
+  <div class="h2-kicker">// certifications</div>
+  <h2>Certifications &amp; Training</h2>
+  <p class="section-intro">Vendor and platform credentials, plus continuous hands-on lab work.</p>
+  <div class="cert-grid">
+    <div class="card cert reveal">
+      <div class="icon">[ IN PROGRESS ]</div>
+      <h3>CompTIA Security+</h3>
+      <p>Industry-standard baseline security certification — currently preparing.</p>
+    </div>
+    <div class="card cert reveal">
+      <div class="icon">[ CERTIFIED ]</div>
+      <h3>Microsoft SC-900</h3>
+      <p>Security, Compliance &amp; Identity Fundamentals.</p>
+      <a class="verify" href="https://www.credly.com/badges/cb290a2c-d177-4d7c-816e-2e6dab797bc4" target="_blank" rel="noopener">Verify on Credly →</a>
+    </div>
+    <div class="card cert reveal">
+      <div class="icon">[ CERTIFIED ]</div>
+      <h3>TryHackMe Cyber Security 101</h3>
+      <p>Core security concepts, tooling, and attack/defence fundamentals.</p>
+    </div>
+    <div class="card cert reveal">
+      <div class="icon">[ CERTIFIED ]</div>
+      <h3>TryHackMe Pre-Security</h3>
+      <p>Networking, web, and operating-system security foundations.</p>
+    </div>
+  </div>
+  <div class="section-rule"></div>
+</section>
+
+<!-- PROJECTS -->
+<section class="block" id="projects">
+  <div class="h2-kicker">// projects</div>
+  <h2>Security Projects</h2>
+  <p class="section-intro">Click a card to flip it for technical detail. Source code on GitHub where public.</p>
+  <div class="proj-grid">
+
+    <div class="proj reveal" tabindex="0" role="button" aria-expanded="false" aria-label="ML-Based Network Intrusion Detection — click to flip for details">
+      <div class="proj-inner">
+        <div class="proj-face">
+          <div class="tagline">MSc Dissertation · In Progress 2026</div>
+          <h3>ML-Based Network Intrusion Detection — Adversarial Robustness</h3>
+          <p class="desc">End-to-end NIDS pipeline classifying 10 traffic classes across 13M+ network flows — ransomware, backdoor, scanning, DoS and DDoS — with F1 ≥ 0.98.</p>
+          <div class="flip-hint">flip for details</div>
+        </div>
+        <div class="proj-face back">
+          <h4>Highlights</h4>
+          <ul>
+            <li>10-class detection across 13M+ NetFlow records at F1 ≥ 0.98</li>
+            <li>MITRE ATT&amp;CK-grounded threat taxonomy modelling realistic attacker capability</li>
+            <li>Measured detection-evasion behaviour under adversarial conditions</li>
+          </ul>
+          <h4>Stack</h4>
+          <div class="pill-row">
+            <span class="pill">Python</span><span class="pill">Scikit-learn</span><span class="pill">XGBoost</span><span class="pill">TensorFlow</span><span class="pill">NetFlow</span><span class="pill">MITRE ATT&amp;CK</span>
+          </div>
+          <span class="repo-note">repo private — dissertation in progress</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj reveal" tabindex="0" role="button" aria-expanded="false" aria-label="Host-Based Intrusion Detection prototype — click to flip for details">
+      <div class="proj-inner">
+        <div class="proj-face">
+          <div class="tagline">Host-Based Intrusion Detection</div>
+          <h3>Linux Process Anomaly Detection via System-Call Analysis</h3>
+          <p class="desc">Lightweight, ML-powered HIDS prototype that baselines normal process behaviour with strace and flags malicious deviations across 100,000+ system events — no signature database.</p>
+          <div class="flip-hint">flip for details</div>
+        </div>
+        <div class="proj-face back">
+          <h4>Highlights</h4>
+          <ul>
+            <li>Four-stage pipeline: strace tracing → feature extraction → unsupervised ML (One-Class SVM / LOF) → analyst-readable reports with confidence scores</li>
+            <li>10-indicator behavioural feature layer — Shannon entropy, syscall transition rates, file/process/network/memory/security operation ratios</li>
+            <li>Low-false-positive design to minimise alert fatigue; model persistence for continuous monitoring</li>
+          </ul>
+          <h4>Stack</h4>
+          <div class="pill-row">
+            <span class="pill">Python</span><span class="pill">Scikit-learn</span><span class="pill">strace</span><span class="pill">Pandas</span><span class="pill">NumPy</span>
+          </div>
+          <a class="repo-link" href="https://github.com/Base-Karthik-S/Strace-ML-Anomaly-Detection" target="_blank" rel="noopener">github.com/Base-Karthik-S/Strace-ML-Anomaly-Detection →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj reveal" tabindex="0" role="button" aria-expanded="false" aria-label="System-call anomaly-based malware detection — click to flip for details">
+      <div class="proj-inner">
+        <div class="proj-face">
+          <div class="tagline">Zero-Day Malware Detection</div>
+          <h3>System-Call Anomaly-Based Malware Detection</h3>
+          <p class="desc">Host-based malware detector that profiles a binary's runtime system-call behaviour at the kernel boundary — trained on benign software only, so it catches novel, fileless and zero-day threats.</p>
+          <div class="flip-hint">flip for details</div>
+        </div>
+        <div class="proj-face back">
+          <h4>Highlights</h4>
+          <ul>
+            <li>Local Outlier Factor model fitted exclusively on benign behaviour — functions as a behavioural whitelist</li>
+            <li>Explicit threat model: zero-day attacks, fileless malware, and compromised legitimate binaries</li>
+            <li>10 quantitative features distilled from raw syscall sequences, including entropy and transition rate</li>
+          </ul>
+          <h4>Stack</h4>
+          <div class="pill-row">
+            <span class="pill">Python</span><span class="pill">Scikit-learn (LOF)</span><span class="pill">strace</span><span class="pill">Linux</span>
+          </div>
+          <a class="repo-link" href="https://github.com/Base-Karthik-S/System-Call-Anomaly-Based-Malware-Detection" target="_blank" rel="noopener">github.com/Base-Karthik-S/System-Call-Anomaly-Based-Malware-Detection →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj reveal" tabindex="0" role="button" aria-expanded="false" aria-label="Robust keystroke classification under adversarial conditions — click to flip for details">
+      <div class="proj-inner">
+        <div class="proj-face">
+          <div class="tagline">Adversarial ML · MSc Group Project</div>
+          <h3>Robust Keystroke Classification under Adversarial Conditions</h3>
+          <p class="desc">Multi-model evaluation framework for acoustic side-channel keystroke inference — with adversarial robustness testing and a blockchain-backed audit trail.</p>
+          <div class="flip-hint">flip for details</div>
+        </div>
+        <div class="proj-face back">
+          <h4>Highlights</h4>
+          <ul>
+            <li>Fair comparison of SVM, Random Forest, LSTM, LogMel CNN and CoAtNet models on identical data</li>
+            <li>Structure-aware attacks: FGSM, BIM, PGD for differentiable models; DFT perturbations for the rest</li>
+            <li>Key finding: highest clean accuracy ≠ most secure — LSTM won on robustness (91.33% score, 0.48% attack success rate)</li>
+            <li>Winning model hashed and committed to an Ethereum (Sepolia) ledger for a tamper-evident audit trail</li>
+          </ul>
+          <h4>Stack</h4>
+          <div class="pill-row">
+            <span class="pill">Python</span><span class="pill">TensorFlow</span><span class="pill">FGSM/BIM/PGD</span><span class="pill">Ethereum Sepolia</span>
+          </div>
+          <a class="repo-link" href="https://github.com/Base-Karthik-S/Robust-Keystroke-Classification-under-Adversarial-Conditions-with-Secure-Audit-Framework" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj reveal" tabindex="0" role="button" aria-expanded="false" aria-label="Acoustic adversary project — click to flip for details">
+      <div class="proj-inner">
+        <div class="proj-face">
+          <div class="tagline">Audio Adversarial ML Research</div>
+          <h3>Acoustic Adversary — Attacking Deep Audio Classifiers</h3>
+          <p class="desc">Investigated the adversarial robustness of Google's YAMNet audio classifier by implementing and comparing FGSM and PGD gradient-based attacks across varying perturbation strengths.</p>
+          <div class="flip-hint">flip for details</div>
+        </div>
+        <div class="proj-face back">
+          <h4>Highlights</h4>
+          <ul>
+            <li>FGSM caused moderate confidence degradation but rarely flipped labels; PGD consistently induced misclassification even at SNR &gt; 17 dB</li>
+            <li>Evaluated with Top-1 confidence, signal-to-noise ratio, and Attack Success Rate across incremental Ɛ batches</li>
+            <li>Bridges image-domain adversarial research into the less-explored audio modality</li>
+          </ul>
+          <h4>Stack</h4>
+          <div class="pill-row">
+            <span class="pill">TensorFlow</span><span class="pill">YAMNet</span><span class="pill">FGSM</span><span class="pill">PGD</span><span class="pill">LibriSpeech</span>
+          </div>
+          <a class="repo-link" href="https://github.com/Base-Karthik-S/Acoustic-Adversary-Project" target="_blank" rel="noopener">github.com/Base-Karthik-S/Acoustic-Adversary-Project →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj reveal" tabindex="0" role="button" aria-expanded="false" aria-label="Cloud-native monitoring stack on Kubernetes — click to flip for details">
+      <div class="proj-inner">
+        <div class="proj-face">
+          <div class="tagline">Observability &amp; Visibility</div>
+          <h3>Cloud-Native Monitoring Stack on Kubernetes</h3>
+          <p class="desc">End-to-end observability and benchmarking pipeline on MicroK8s — Prometheus + Grafana around a Java web app, stress-tested with a custom containerised load generator, all as Infrastructure as Code.</p>
+          <div class="flip-hint">flip for details</div>
+        </div>
+        <div class="proj-face back">
+          <h4>Highlights</h4>
+          <ul>
+            <li>Full metrics pipeline: Node Exporter, kube-state-metrics and cAdvisor (adapted for MicroK8s containerd) scraped by Prometheus every 15s into Grafana dashboards</li>
+            <li>Purpose-built containerised load generator (20 req/s) used to diagnose a real architectural limitation in the app</li>
+            <li>Everything declarative YAML — apply the manifests and the whole environment reproduces itself</li>
+          </ul>
+          <h4>Stack</h4>
+          <div class="pill-row">
+            <span class="pill">Kubernetes (MicroK8s)</span><span class="pill">Docker</span><span class="pill">Prometheus</span><span class="pill">Grafana</span><span class="pill">cAdvisor</span><span class="pill">Python</span>
+          </div>
+          <a class="repo-link" href="https://github.com/Base-Karthik-S/Cloud-Native-Monitoring-Stack-on-Kubernetes" target="_blank" rel="noopener">github.com/Base-Karthik-S/Cloud-Native-Monitoring-Stack-on-Kubernetes →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj reveal" tabindex="0" role="button" aria-expanded="false" aria-label="TryHackMe training and CTF — click to flip for details">
+      <div class="proj-inner">
+        <div class="proj-face">
+          <div class="tagline">Practical Training &amp; Competitions</div>
+          <h3>TryHackMe SOC Labs &amp; AI Odyssey CTF</h3>
+          <p class="desc">100+ hands-on labs across SOC monitoring, SIEM, traffic analysis and IOC investigation — plus leading a team to 7th place in TryHackMe's AI Odyssey security CTF.</p>
+          <div class="flip-hint">flip for details</div>
+        </div>
+        <div class="proj-face back">
+          <h4>Highlights</h4>
+          <ul>
+            <li>7th place, AI Odyssey AI-Security CTF — coordinated task triage under time pressure as team lead</li>
+            <li>SIEM &amp; log analysis, Wireshark traffic analysis, phishing &amp; IOC investigation</li>
+            <li>Incident triage and escalation practice across 100+ rooms</li>
+          </ul>
+          <h4>Profile</h4>
+          <a class="repo-link" href="https://tryhackme.com/p/SilasKlaus" target="_blank" rel="noopener">tryhackme.com/p/SilasKlaus →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="section-rule"></div>
+</section>
+
+<!-- SKILLS -->
+<section class="block" id="skills">
+  <div class="h2-kicker">// skills</div>
+  <h2>Skills Matrix</h2>
+  <p class="section-intro">Detection-confidence view of my current toolkit.</p>
+  <p class="legend">LEVEL: <b>INTERMEDIATE</b> · EXPERIENCE: 1 YR (hands-on, academic &amp; lab-based)</p>
+
+  <div class="skill-group">
+    <h3>Security Operations &amp; IR</h3>
+    <div class="skills-grid">
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">Incident Triage &amp; Escalation</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">SIEM &amp; Log Analysis (Splunk, ELK)</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">IOC Identification</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">HIDS / NIDS</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">Behavioural Anomaly Detection</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">Case Documentation</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+    </div>
+  </div>
+
+  <div class="skill-group">
+    <h3>Networking</h3>
+    <div class="skills-grid">
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">TCP/IP · DNS · DHCP · HTTP/S · SMTP</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">Packet Analysis (Wireshark)</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">Nmap</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">VPNs &amp; Firewalls</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+    </div>
+  </div>
+
+  <div class="skill-group">
+    <h3>Threats &amp; Frameworks</h3>
+    <div class="skills-grid">
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">Malware Traffic Analysis</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">Phishing Indicators</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">MITRE ATT&amp;CK</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">Adversarial ML (FGSM, PGD, BIM)</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+    </div>
+  </div>
+
+  <div class="skill-group">
+    <h3>Scripting &amp; Data</h3>
+    <div class="skills-grid">
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">Python (Pandas, NumPy, Scikit-learn)</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">Bash</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">SQL</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+    </div>
+  </div>
+
+  <div class="skill-group">
+    <h3>Systems &amp; Tools</h3>
+    <div class="skills-grid">
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">Linux Administration</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">Docker &amp; Kubernetes</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">Prometheus &amp; Grafana</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+      <div class="skill" style="--lvl:60%"><div class="skill-top"><span class="skill-name">Git</span><span class="skill-meta">INTERMEDIATE · 1 YR</span></div><div class="bar"><i></i></div></div>
+    </div>
+  </div>
+  <div class="section-rule"></div>
+</section>
+
+<!-- CONTACT -->
+<section class="block" id="contact">
+  <div class="h2-kicker">// get in touch</div>
+  <h2>Get in Touch</h2>
+  <p class="section-intro">Open to SOC analyst, security analyst and threat-detection roles. The fastest way to reach me is email.</p>
+
+  <div class="contact-grid">
+    <a class="contact-card reveal" href="mailto:karthiksreesun@gmail.com">
+      <span class="k">Email</span>
+      <span class="v">Karthik S</span>
+      <span class="u">karthiksreesun@gmail.com</span>
+    </a>
+    <a class="contact-card reveal" href="https://www.linkedin.com/in/karthik-s-0b750b22a/" target="_blank" rel="noopener">
+      <span class="k">LinkedIn</span>
+      <span class="v">Connect</span>
+      <span class="u">linkedin.com/in/karthik-s-0b750b22a</span>
+    </a>
+    <a class="contact-card reveal" href="https://github.com/Base-Karthik-S" target="_blank" rel="noopener">
+      <span class="k">GitHub</span>
+      <span class="v">Base-Karthik-S</span>
+      <span class="u">github.com/Base-Karthik-S</span>
+    </a>
+    <a class="contact-card reveal" href="https://tryhackme.com/p/SilasKlaus" target="_blank" rel="noopener">
+      <span class="k">TryHackMe</span>
+      <span class="v">SilasKlaus</span>
+      <span class="u">tryhackme.com/p/SilasKlaus</span>
+    </a>
+  </div>
+
+  <div class="cta reveal">
+    <h3>Hiring for your SOC?</h3>
+    <p>I bring detection engineering projects, 100+ hours of hands-on lab triage, and a proven analytical approach to root-cause investigation.</p>
+    <a class="btn" href="mailto:karthiksreesun@gmail.com?subject=SOC%20Analyst%20Opportunity">Email me →</a>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Karthik S</span>
+  <span>status: <span style="color:var(--ok)">monitoring</span> · built for the SOC</span>
+</footer>
+
+</div>
+
+<script>
+/* ---------- scroll-triggered reveals ---------- */
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ---------- skill bars animate on scroll into view ---------- */
+const skillIO = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const skills=[...e.target.querySelectorAll('.skill')];
+      skills.forEach((s,i)=>setTimeout(()=>s.classList.add('animated'), 60*i));
+      skillIO.unobserve(e.target);
+    }
+  });
+},{threshold:.2});
+document.querySelectorAll('.skill-group').forEach(g=>skillIO.observe(g));
+
+/* ---------- scrollspy for anchor nav ---------- */
+const links=[...document.querySelectorAll('.anchor-link')];
+const sections=links.map(l=>document.querySelector(l.getAttribute('href')));
+const spy = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.toggle('current', l.getAttribute('href')==='#'+e.target.id));
+    }
+  });
+},{rootMargin:'-30% 0px -60% 0px'});
+sections.forEach(s=>{ if(s) spy.observe(s); });
+
+/* ---------- project flip (click + keyboard) ---------- */
+document.querySelectorAll('.proj').forEach(p=>{
+  const toggle=()=>{ p.classList.toggle('flipped'); p.setAttribute('aria-expanded', p.classList.contains('flipped')); };
+  p.addEventListener('click',e=>{ if(e.target.closest('a')) return; toggle(); });
+  p.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }});
+});
+
+/* ---------- hero triage log typing ---------- */
+const logLines = [
+  {tag:'INFO', cls:'info', msg:'session started — analyst: Karthik S'},
+  {tag:'DETECT', cls:'warn', msg:'13M+ flows classified · F1 ≥ 0.98 · ransomware / DoS / backdoor'},
+  {tag:'DETECT', cls:'warn', msg:'endpoint anomalies flagged across 100,000+ system events'},
+  {tag:'OK', cls:'ok', msg:'100+ TryHackMe labs complete · AI Odyssey CTF: rank #7'},
+  {tag:'STATUS', cls:'info', msg:'open to SOC / security analyst roles — get in touch'}
+];
+const logEl = document.getElementById('triageLog');
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function ts(i){ const d=new Date(); d.setSeconds(d.getSeconds()+i*3); return d.toTimeString().slice(0,8); }
+
+if(reduced){
+  logLines.forEach((l,i)=>{
+    logEl.insertAdjacentHTML('beforeend',
+      `<div class="tl-line show"><span class="tl-time">${ts(i)}</span><span class="tl-tag ${l.cls}">[${l.tag}]</span><span class="tl-msg">${l.msg}</span></div>`);
+  });
+}else{
+  let li=0;
+  function nextLine(){
+    if(li>=logLines.length){ return; }
+    const l=logLines[li];
+    const line=document.createElement('div');
+    line.className='tl-line';
+    line.innerHTML=`<span class="tl-time">${ts(li)}</span><span class="tl-tag ${l.cls}">[${l.tag}]</span><span class="tl-msg"></span>`;
+    logEl.appendChild(line);
+    requestAnimationFrame(()=>line.classList.add('show'));
+    const msgEl=line.querySelector('.tl-msg');
+    const cursor=document.createElement('span'); cursor.className='cursor';
+    msgEl.after(cursor);
+    let ci=0;
+    const t=setInterval(()=>{
+      msgEl.textContent=l.msg.slice(0,++ci);
+      if(ci>=l.msg.length){ clearInterval(t); cursor.remove(); li++; setTimeout(nextLine, 420); }
+    }, 16);
+  }
+  setTimeout(nextLine, 500);
+}
+</script>
+</body>
+</html>
